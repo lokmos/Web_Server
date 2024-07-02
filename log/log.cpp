@@ -20,7 +20,7 @@ Log::~Log() {
 bool Log::init(const char *file_name, int close_log, int log_buf_size = 8192, int split_lines = 5000000, int max_queue_size = 0) {
     if (max_queue_size) {
         m_is_async = true;
-        m_log_queue = new block_queue<string>(max_size);
+        m_log_queue = new block_queue<string>(max_queue_size);
 
         pthread_t tid;
         pthread_create(&tid, NULL, flush_log_thread, NULL);
@@ -34,7 +34,7 @@ bool Log::init(const char *file_name, int close_log, int log_buf_size = 8192, in
 
     m_split_lines = split_lines;
 
-    time_t = t = time(NULL);
+    time_t t = time(NULL);
     struct tm *sys_tm = localtime(&t);
     struct tm my_tm = *sys_tm;
 
@@ -66,7 +66,7 @@ void Log::write_log(int level, const char *format, ...) {
     gettimeofday(&now, NULL);
     time_t t = now.tv_sec;
     struct tm *sys_tm = localtime(&t);
-    struct tm_my_tm = *sys_tm;
+    struct tm my_tm = *sys_tm;
 
     char s[16] = {0};
 
@@ -81,7 +81,7 @@ void Log::write_log(int level, const char *format, ...) {
             strcpy(s, "[warn]:");
             break;
         case 3:
-            strcpy(s, "[error]:");
+            strcpy(s, "[erro]:");
             break;
         default:
             strcpy(s, "[info]:");
@@ -115,7 +115,7 @@ void Log::write_log(int level, const char *format, ...) {
     va_list valst;
     va_start(valst, format);
 
-    char log_str[256] = {0};
+    string log_str;
 
     mutex.lock();
     int n = snprintf(m_buf, 48, "%d-%02d-%02d %02d:%02d:%02d.%06ld %s ",
@@ -139,4 +139,10 @@ void Log::write_log(int level, const char *format, ...) {
     }
 
     va_end(valst);
+}
+
+void Log::flush(void) {
+    m_mutex.lock();
+    fflush(m_fp);
+    m_mutex.unlock();
 }
