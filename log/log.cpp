@@ -17,7 +17,7 @@ Log::~Log() {
     }
 }
 
-bool Log::init(const char *file_name, int close_log, int log_buf_size = 8192, int split_lines = 5000000, int max_queue_size = 0) {
+bool Log::init(const char *file_name, int close_log, int log_buf_size, int split_lines, int max_queue_size) {
     if (max_queue_size) {
         m_is_async = true;
         m_log_queue = new block_queue<string>(max_queue_size);

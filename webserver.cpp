@@ -128,8 +128,8 @@ void WebServer::eventListen() {
     utils.addsig(SIGTERM, utils.sig_handler, false);
 
     alarm(TIMESLOT);
-    utils::u_epollfd = m_epollfd;
-    utils::u_pipefd = m_pipefd;
+    Utils::u_epollfd = m_epollfd;
+    Utils::u_pipefd = m_pipefd;
 
 }
 
@@ -146,7 +146,7 @@ void WebServer::timer(int connfd, struct sockaddr_in client_address) {
     utils.m_timer_lst.add_timer(timer);
 }
 
-void WebServer::adjust_timer(tuil_timer *timer) {
+void WebServer::adjust_timer(util_timer *timer) {
     time_t cur = time(NULL);
     timer->expire = cur + 3 * TIMESLOT;
     utils.m_timer_lst.adjust_timer(timer);
@@ -163,7 +163,7 @@ void WebServer::deal_timer(util_timer *timer, int sockfd) {
     LOG_INFO("close fd %d", users_timer[sockfd].sockfd);
 }
 
-bool SebServer::dealclientdata() {
+bool WebServer::dealclientdata() {
     struct sockaddr_in client_address;
     socklen_t client_addrlength = sizeof(client_address);
 

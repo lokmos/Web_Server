@@ -56,7 +56,7 @@ private:
     bool m_is_async;                  //是否同步标志位
     locker m_mutex;
     int m_close_log; //关闭日志
-}
+};
 
 #define LOG_DEBUG(format, ...) if(0 == m_close_log) {Log::get_instance()->write_log(0, format, ##__VA_ARGS__); Log::get_instance()->flush();}
 #define LOG_INFO(format, ...) if(0 == m_close_log) {Log::get_instance()->write_log(1, format, ##__VA_ARGS__); Log::get_instance()->flush();}
